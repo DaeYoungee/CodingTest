@@ -30,11 +30,15 @@ class Babbling {
     // <-----
 }
 
+/* 깨달은 점
+1. 문자열에서 찾아야 할 pattern 과 찾지 말아야 할 pattern 이 존재한다면 배열로 만들어 접근해보자.
+    --> 무턱대로 처음부터 문자를 찾지말자.
+2. 문자열에서 pattern 을 찾을 경우 정규식을 이용해보자. 훨씬 빠르다.(solution2)
+
+*/
 
 fun main() {
 //    println(Babbling().solution(arrayOf("aya", "yee", "u", "maa")))
     println(Babbling().solution(arrayOf("ayaye", "yeayaye", "yeye", "yemawoo", "ayaayaa")))
 //    println(Babbling().solution(arrayOf("yayae")))
-
-
 }
