@@ -1,5 +1,6 @@
 package com.example.codingtest.level1
 
+// 두 배열의 내적
 class DotProduct {
     //    fun solution(a: IntArray, b: IntArray): Int {
 //        var sum = 0
