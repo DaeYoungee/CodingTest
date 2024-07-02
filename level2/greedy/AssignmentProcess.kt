@@ -1,7 +1,6 @@
-package com.example.codingtest.level2
+package com.example.codingtest.level2.greedy
 
 import java.util.Stack
-import kotlin.math.min
 
 // 과제 진행하기
 class AssignmentProcess {

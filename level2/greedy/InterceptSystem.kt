@@ -1,4 +1,4 @@
-package com.example.codingtest.level2
+package com.example.codingtest.level2.greedy
 
 // 요격 시스템
 class InterceptSystem {

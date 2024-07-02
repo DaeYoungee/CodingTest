@@ -1,4 +1,4 @@
-package com.example.codingtest.level2
+package com.example.codingtest.level2.greedy
 
 // 연속된 부분 수열의 합
 class SequenceSum {
