@@ -56,6 +56,29 @@ class DigMineral {
 
         return list.sum()
     }
+
+    // 풀이 2
+    /*
+    private fun solve(picks: IntArray, minerals: List<String>, fatigue: Int): Int {
+        if (picks.sum() == 0 || minerals.isEmpty()) return fatigue
+        return listOf(
+            mapOf("diamond" to 1, "iron" to 1, "stone" to 1),
+            mapOf("diamond" to 5, "iron" to 1, "stone" to 1),
+            mapOf("diamond" to 25, "iron" to 5, "stone" to 1),
+        ).mapIndexed { index, fatigues ->
+            if (picks[index] > 0) {
+                val nextPicks = picks.clone()
+                nextPicks[index] -= 1
+                solve(nextPicks, minerals.drop(5), fatigue + minerals.take(5).sumOf { fatigues.getOrDefault(it, 0) })
+            } else 2147483647
+        }.minOrNull()!!
+    }
+
+    fun solution(picks: IntArray, minerals: Array<String>): Int {
+        return solve(picks, minerals.asList(), 0)
+    }
+    */
+
 }
 
 fun main() {
