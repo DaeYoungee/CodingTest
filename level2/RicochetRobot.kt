@@ -2,125 +2,90 @@ package com.example.codingtest.level2
 
 // 리코쳇 로봇
 class RicochetRobot {
+    var answer: Int = 0
+    val dx = arrayOf(0, 0, -1, 1)
+    val dy = arrayOf(-1, 1, 0, 0)
+    val directionList = listOf("up", "down", "left", "right")
+
     fun walk(
-        position: List<Pair<Int, Int>>,
-        road: List<Pair<Int, Int>>,
-        obstacle: List<Pair<Int, Int>>,
-        goal: Pair<Int, Int>,
-        walls: Pair<Int, Int>,
-        count: Int = 0,
-        prevDirection: String = "",
-    ): Int {
-        println("position: $position, count: $count")
-
-        val list = listOf(
-            goal.first + 1 to goal.second,
-            goal.first - 1 to goal.second,
-            goal.first to goal.second + 1,
-            goal.first to goal.second - 1
-        )
-
-        // 목표 위치에 도달할 수 없는 case 2가지
-        if (list.all { it in obstacle } ) return -1
-        else if (list.all { it in road } ) return -1
-
-        // 목표 위치 도달
-        if (position.last() == goal) {
-            return count
+        board: Array<String>,                   // 전체 좌표
+        position: Pair<Int, Int>,               // 현재 위치
+        passed: List<Pair<Int, Int>>,           // 지나온 좌표
+        count: Int = 0,                         // 경로 지날 때마다 1씩 증가
+        prevDirection: String = "",             // 이전 방향
+    ) {
+        println("position: $position, \npassed: $passed, \ncount: $count, \nprevDirection: $prevDirection")
+        // 현재 위치가 지나온 좌표에 포함된다(똑같은 경로를 지남)
+        if (position in passed) {
+            return
         }
 
-        val test = listOf("up", "down", "left", "right").map { direction ->
-//            println("direction: $direction")
-            if (direction == "up" && position.last().first > 0 && (position.last().first - 1 to position.last().second) !in obstacle && prevDirection != "up" && prevDirection != "down") {
-                val changedPositionList = obstacle.filter { it.second == position.last().second && it.first < position.last().first }
-                val changedPosition = if (changedPositionList.isEmpty()) {
-                    0 to position.last().second
-                } else {
-                    val wall = changedPositionList.minByOrNull { it.second }
+        // 이미 goal를 지난 최소 경로보다 현재 count가 더 많은 경우
+        if (answer != 0 && count >= answer) {
+            return
+        }
 
-                    wall!!.first + 1 to wall.second
-                }
-                if (changedPosition in position.slice(1 until position.size - 1)) {
-                    Int.MAX_VALUE
-                } else {
-                    walk(position + changedPosition, road, obstacle, goal, walls, count + 1, "up")
-                }
-            } else if (direction == "down" && position.last().first < walls.first - 1 && (position.last().first + 1 to position.last().second) !in obstacle && prevDirection != "down" && prevDirection != "up") {
+        // goal를 지난 경우
+        if (board[position.first][position.second] == 'G') {
+            answer = count
+            return
+        }
 
-                val changedPositionList = obstacle.filter { it.second == position.last().second && it.first > position.last().first}
-                val changedPosition = if (changedPositionList.isEmpty()) {
-                    walls.first -1 to position.last().second
-                } else {
-                    val wall = changedPositionList.maxByOrNull { it.second }
-                    wall!!.first - 1 to wall.second
+
+        for ((index, direction) in directionList.withIndex()) {
+            when (direction) {
+                directionList[0] -> {
+                    if (prevDirection == directionList[1]) continue
                 }
-                if (changedPosition in position.slice(1 until position.size - 1)) {
-                    Int.MAX_VALUE
-                } else {
-                    walk(position + changedPosition, road, obstacle, goal, walls, count + 1, "down")
+
+                directionList[1] -> {
+                    if (prevDirection == directionList[0]) continue
                 }
-            } else if (direction == "left" && position.last().second > 0 && (position.last().first to position.last().second - 1) !in obstacle && prevDirection != "left" && prevDirection != "right") {
-                val changedPositionList = obstacle.filter { it.first == position.last().first && it.second < position.last().second}
-                val changedPosition = if (changedPositionList.isEmpty()) {
-                    position.last().first to 0
-                } else {
-                    val wall = changedPositionList.minByOrNull { it.first }
-                    wall!!.first to wall.second + 1
+
+                directionList[2] -> {
+                    if (prevDirection == directionList[3]) continue
                 }
-                if (changedPosition in position.slice(1 until position.size - 1)) {
-                    Int.MAX_VALUE
-                } else {
-                    walk(position + changedPosition, road, obstacle, goal, walls, count + 1, "left")
+
+                directionList[3] -> {
+                    if (prevDirection == directionList[2]) continue
                 }
-            } else if (direction == "right" && position.last().second < walls.second - 1 && (position.last().first to position.last().second + 1) !in obstacle && prevDirection != "right" && prevDirection != "left") {
-                val changedPositionList = obstacle.filter { it.first == position.last().first && it.second > position.last().second}
-                val changedPosition = if (changedPositionList.isEmpty()) {
-                    position.last().first to walls.second-1
-                } else {
-                    val wall = changedPositionList.maxByOrNull { it.first }
-                    wall!!.first to wall.second -1
-                }
-                if (changedPosition in position.slice(1 until position.size - 1)) {
-                    Int.MAX_VALUE
-                } else {
-                    walk(position + changedPosition, road, obstacle, goal, walls, count + 1, "right")
-                }
-            } else {
-                println("길 없음")
-                Int.MAX_VALUE
             }
-        }
 
-        println("test: $test")
-        return test.minOf { it }
-//        return 0
+            var currentPosition = position
+
+            while (true) {
+                // board, 전체 좌표의 범위를 벗어나는지 확인
+                if (currentPosition.first + dy[index] !in board.indices || currentPosition.second + dx[index] !in board[0].indices) {
+                    break
+                }
+                // 벽에 부딪히는지 확인
+                if (board[currentPosition.first+dy[index]][currentPosition.second+dx[index]] == 'D') {
+                    break
+                }
+                currentPosition = currentPosition.first + dy[index] to currentPosition.second + dx[index]
+            }
+            val newPassed = passed + position
+            if (position != currentPosition) {
+                walk(board, currentPosition, newPassed, count + 1, direction)
+            }
+
+        }
     }
 
+
     fun solution(board: Array<String>): Int {
-        val list = board
-            .map { it.toList() }
-            .mapIndexed { index1, chars ->
-                chars.mapIndexed { index2, c ->
-                    c to Pair(index1, index2)
+        var position = -1 to -1
+        for (i in board.indices) {
+            for (j in board[i].indices) {
+                if (board[i][j] == 'R') {
+                    position = i to j
                 }
-            }.flatten()
-        val position = list.filter { it.first == 'R' }.associate { it }.values.first()
-        val road = list.filter { it.first == '.' || it.first == 'R' }.map { it.second }
-        val obstacle = list.filter { it.first == 'D' }.map { it.second }
-        val goal = list.filter { it.first == 'G' }.associate { it }.values.first()
-        val wall = board.size to board[0].length
+            }
+        }
+        walk(board, position, emptyList(), 0)
 
-//        println("list: $list")
-//        println("position: $position")
-//        println("road: $road")
-//        println("obstacle: $obstacle")
-//        println("goal: $goal")
-//        println("wall: $wall")
-
-//        walk(position, road, obstacle, goal, wall)
-
-        var answer: Int = 0
-        return walk(listOf(position), road, obstacle, goal, wall)
+        if (answer == 0) return -1
+        return answer
     }
 }
 
