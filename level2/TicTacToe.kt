@@ -22,7 +22,7 @@ class TicTacToe {
         }
 
         // 2차원 배열의 주 대각선에 위치하는지 확인
-        if (o.count { it.first[0] == it.first[1]} == board.size) {
+        if (o.count { it.first[0] == it.first[1] } == board.size) {
             isOBingo = true
         } else if (o.count { it.first[0] + it.first[1] == board.size - 1 } == board.size) { // 2찬원 배열의 부 대각선에 위치하는지 확인
             isOBingo = true
@@ -34,26 +34,24 @@ class TicTacToe {
             isXBingo = true
         }
 
-        else {
-            for (i in board.indices) {
-                if (o.count { it.first[0] == i } == board.size) {
-                    isOBingo = true
-                } else if (o.count { it.first[1] == i } == board.size) {
-                    isOBingo = true
-                }
-                if (x.count { it.first[0] == i } == board.size) {
-                    isXBingo = true
-                } else if (x.count { it.first[1] == i } == board.size) {
-                    isXBingo = true
-                }
+        for (i in board.indices) {
+            if (o.count { it.first[0] == i } == board.size) {
+                isOBingo = true
+            } else if (o.count { it.first[1] == i } == board.size) {
+                isOBingo = true
+            }
+            if (x.count { it.first[0] == i } == board.size) {
+                isXBingo = true
+            } else if (x.count { it.first[1] == i } == board.size) {
+                isXBingo = true
             }
         }
 
-        if (oCount-xCount !in 0..1) {
+        if (oCount - xCount !in 0..1) {
             println("case1")
             return 0
         }
-        if (isOBingo && !isXBingo && oCount-xCount != 1) {
+        if (isOBingo && !isXBingo && oCount - xCount != 1) {
             println("case2")
             return 0
         }
