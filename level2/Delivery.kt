@@ -4,108 +4,79 @@ import java.util.Stack
 
 // 택배 배달과 수거하기
 class Delivery {
-    fun solution(cap: Int, n: Int, deliveries: IntArray, pickups: IntArray): Long {
-        var answer = 0L
-
-
-        var d = 0
-        var p = 0
-
-        for (i in n-1 downTo 0) {
-            var cnt = 0
-
-            d -= deliveries[i]
-            p -= pickups[i]
-
-            while (d < 0 || p < 0) {
-                d += cap
-                p += cap
-                cnt += 1
-            }
-
-            answer += (i + 1) * 2 * cnt
-        }
-
-        return answer
-
-
-//        var answer: Long = 0
+//    fun solution(cap: Int, n: Int, deliveries: IntArray, pickups: IntArray): Long {
+//        var answer = 0L
+//        var d = 0
+//        var p = 0
 //
-//        val d = Stack<Pair<Int, Int>>()
-//        val p = Stack<Pair<Int, Int>>()
+//        for (i in n-1 downTo 0) {
+//            var cnt = 0
 //
-//        deliveries.forEachIndexed { index, i ->
-//            if (i != 0) {
-//                d.push(index to i)
-//            }
-//        }
-//        pickups.forEachIndexed { index, i ->
-//            if (i != 0) {
-//                p.push(index to i)
-//            }
-//        }
+//            d -= deliveries[i]
+//            p -= pickups[i]
 //
-//        while (d.isNotEmpty() || p.isNotEmpty()) {
-//
-//            var deliveryCount = if (d.isEmpty()) {
-//                0
-//            } else {
-//                var index = d.lastIndex
-//                val sum = d.sumOf { it.second }
-//                if (sum > cap) {
-//                    cap
-//                } else {
-//                    sum
-//                }
-//            }
-//            if (d.isEmpty() && p.isNotEmpty()) {
-//                answer += (p.peek().first + 1) * 2
-//            } else if (d.isNotEmpty() && p.isEmpty()) {
-//                answer += (d.peek().first + 1) * 2
-//            } else if (d.isNotEmpty() && p.isNotEmpty()) {
-//                answer += (p.peek().first + 1).coerceAtLeast(d.peek().first + 1) * 2
+//            while (d < 0 || p < 0) {
+//                d += cap
+//                p += cap
+//                cnt += 1
 //            }
 //
-//
-//
-//            while (deliveryCount > 0) {
-//                if (d.isEmpty()) { break }
-//
-//                var dHome = d.pop()
-//                if (deliveryCount - dHome.second < 0) {
-//                    d.push(dHome.first to dHome.second - deliveryCount)
-//                    deliveryCount = 0
-//                } else {
-//                    deliveryCount -= dHome.second
-//                }
-//            }
-//
-//
-//
-//            while (deliveryCount < cap) {
-//                if (p.isEmpty()) { break }
-//                var pHome = p.pop()
-//                if (pHome.second + deliveryCount > cap) {
-//                    p.push(pHome.first to pHome.second - (cap - deliveryCount))
-//                    deliveryCount = cap
-//                    continue
-//                } else {
-//                    deliveryCount += pHome.second
-//                }
-//            }
+//            answer += (i + 1) * 2 * cnt
 //        }
 //
 //        return answer
+//    }
+
+    fun solution(cap: Int, n: Int, deliveries: IntArray, pickups: IntArray): Long {
+        var answer: Long = 0
+        val ps = Stack<Pair<Int,Int>>()
+        val ds = Stack<Pair<Int,Int>>()
+        for(i in 0 until n){
+            val d = deliveries[i] to i+1
+            val p = pickups[i] to i+1
+            if(d.first > 0){
+                ds.push(d)
+            }
+            if(p.first > 0){
+                ps.push(p)
+            }
+        }
+        while(ps.isNotEmpty() || ds.isNotEmpty()){
+            val dIdx = if(ds.isNotEmpty()) ds.peek().second else 0
+            val pIdx = if(ps.isNotEmpty()) ps.peek().second else 0
+            val idx = Math.max(dIdx,pIdx)
+            answer+=idx*2
+            var box = 0
+            while(ds.isNotEmpty() && box < cap){
+                val remain = cap-box
+                if(ds.peek().first <= remain){
+                    box+=ds.peek().first
+                    ds.pop()
+                } else {
+                    val idx = ds.peek().second
+                    val top = ds.pop().first-remain to idx
+                    ds.push(top)
+                    break
+                }
+            }
+            box = 0
+            while(ps.isNotEmpty() && box < cap){
+                val remain = cap-box
+                if(ps.peek().first <= remain){
+                    box+=ps.peek().first
+                    ps.pop()
+                } else {
+                    val idx = ps.peek().second
+                    val top = ps.pop().first-remain to idx
+                    ps.push(top)
+                    break
+                }
+            }
+
+        }
+        return answer
     }
 }
-
-
-// "택배"의 수량이 cap의 개수와 동일하면 택배 배달하고 돌아오면서 "빈 박스" 수거하기
-// 0 < "택배" < cap 이면 앞에 있는 인덱스 찾아야 함
-
-// stack에 택배를 배달해야 하는 집만 넣어서 탐색해보자. 자연스럽게 뒤에있는 집부터 탑색하게 된다.
-// stack에 넣는 값은 집의 번호(deliveries의 인덱스)
-
 
 fun main() {
 //    println(Delivery().solution(4, 5, intArrayOf(1, 0, 3, 1, 2), intArrayOf(0, 3, 0, 4, 0)))
