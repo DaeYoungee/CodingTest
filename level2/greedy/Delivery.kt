@@ -1,4 +1,4 @@
-package com.example.codingtest.level2
+package com.example.codingtest.level2.greedy
 
 import java.util.Stack
 
