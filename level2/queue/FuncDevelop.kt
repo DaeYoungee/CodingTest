@@ -2,7 +2,7 @@ package com.example.codingtest.level2.queue
 
 import java.util.*
 
-// 기능 개발
+// 기능 개발, 큐 사용
 // https://school.programmers.co.kr/learn/courses/30/lessons/42586
 class FuncDevelop {
     fun solution(progresses: IntArray, speeds: IntArray): IntArray {
