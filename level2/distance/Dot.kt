@@ -1,5 +1,7 @@
-package com.example.codingtest.level2
+package com.example.codingtest.level2.distance
 
+// 점 찍기
+// https://school.programmers.co.kr/learn/courses/30/lessons/140107
 class Dot {
 
     /* 2중 for문 실패
